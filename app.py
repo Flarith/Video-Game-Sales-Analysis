@@ -16,13 +16,13 @@ st.markdown(
 )
 
 # --- Carregando modelo ---
-modelo = load_model('streamlit/modelo_final_vendas')
+modelo = load_model('modelo_final_vendas')
 
 # --- Título ---
 st.markdown('<h3>Painel de Análise de Vendas de Jogos</h3>', unsafe_allow_html=True)
 
 # --- Dataset padrão ---
-novos_dados = pd.read_csv('streamlit/vgsales.csv')
+novos_dados = pd.read_csv('vgsales.csv')
 
 # --- Upload opcional ---
 uploaded_file = st.file_uploader("Carregar CSV de Vendas (opcional)", type="csv")
@@ -175,3 +175,4 @@ with tab4:
         st.plotly_chart(fig_area, use_container_width=True)
     else:
         st.info("Nenhum dado disponível para Evolução das Plataformas.")
+
