@@ -57,7 +57,7 @@ nbformat==5.10.4
 nest-asyncio==1.6.0
 networkx==3.5
 numba==0.61.2
-numpy==1.26.4
+numpy>=2.0.0
 orjson==3.11.3
 packaging==25.0
 pandas==2.1.4
@@ -127,4 +127,5 @@ xxhash==3.5.0
 ydata-profiling==4.8.3
 yellowbrick==1.5
 zipp==3.23.0
+
 
