@@ -60,13 +60,13 @@ numba==0.61.2
 numpy>=2.0.0
 orjson==3.11.3
 packaging==25.0
-pandas==2.1.4
+pandas==2.2.2
 parso==0.8.5
 patsy==1.0.1
 phik==0.12.5
 pillow==11.3.0
 platformdirs==4.4.0
-plotly==6.3.0
+plotly==5.24.1
 plotly-resampler==0.11.0
 pmdarima==2.0.4
 prompt_toolkit==3.0.52
@@ -127,5 +127,3 @@ xxhash==3.5.0
 ydata-profiling==4.8.3
 yellowbrick==1.5
 zipp==3.23.0
-
-
