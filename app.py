@@ -16,13 +16,13 @@ st.markdown(
 )
 
 # --- Carregando modelo ---
-modelo = load_model('modelo_final_vendas')
+modelo = load_model('streamlit/modelo_final_vendas')
 
 # --- Título ---
 st.markdown('<h3>Painel de Análise de Vendas de Jogos</h3>', unsafe_allow_html=True)
 
 # --- Dataset padrão ---
-novos_dados = pd.read_csv('vgsales.csv')
+novos_dados = pd.read_csv('streamlit/vgsales.csv')
 
 # --- Upload opcional ---
 uploaded_file = st.file_uploader("Carregar CSV de Vendas (opcional)", type="csv")
@@ -36,12 +36,18 @@ st.dataframe(novos_dados)
 
 # --- Previsões ---
 previsoes = predict_model(modelo, data=novos_dados)
+
+# Detectar automaticamente a coluna de predição adicionada pelo PyCaret
+pred_col = [c for c in previsoes.columns if c not in novos_dados.columns][0]
+novos_dados['Predicted_Global_Sales'] = previsoes[pred_col]
+
+# --- Adicionando informações extras para filtros ---
 previsoes_ext = previsoes.copy()
 for col in ['Name', 'Year', 'Platform', 'Genre', 'Publisher']:
     if col in novos_dados.columns:
         previsoes_ext[col] = novos_dados[col]
 
-# --- Filtros ---
+# --- Filtros na sidebar ---
 st.sidebar.header("Filtros")
 plataformas = ['All'] + list(previsoes_ext['Platform'].dropna().unique()) if 'Platform' in previsoes_ext.columns else []
 generos = ['All'] + list(previsoes_ext['Genre'].dropna().unique()) if 'Genre' in previsoes_ext.columns else []
@@ -72,7 +78,13 @@ col2.metric("Maior Venda", round(filtrado['Global_Sales'].max(), 2) if not filtr
 col3.metric("Quantidade de Jogos", len(filtrado))
 
 # --- Abas ---
-tab1, tab2, tab3, tab4 = st.tabs([" Vendas por Ano", " Top Jogos", " Plataformas & Distribuições", "Análises avançadas"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    "Vendas por Ano", 
+    "Top Jogos", 
+    "Plataformas & Distribuições", 
+    "Análises avançadas", 
+    "Real vs Predito"
+])
 
 # --- Vendas por Ano ---
 with tab1:
@@ -175,4 +187,34 @@ with tab4:
         st.plotly_chart(fig_area, use_container_width=True)
     else:
         st.info("Nenhum dado disponível para Evolução das Plataformas.")
+
+# --- Real vs Predito ---
+with tab5:
+    if not novos_dados.empty and 'Year' in novos_dados.columns:
+        vendas_ano_pred = novos_dados.groupby('Year')[['Global_Sales','Predicted_Global_Sales']].sum().reset_index()
+
+        # Gráfico de linhas comparativo
+        fig_comp = px.line(
+            vendas_ano_pred,
+            x='Year',
+            y=['Global_Sales', 'Predicted_Global_Sales'],
+            title='Vendas Globais: Real vs Predito',
+            labels={'value':'Vendas Globais', 'Year':'Ano', 'variable':'Legenda'},
+            markers=True
+        )
+        st.plotly_chart(fig_comp, use_container_width=True)
+
+        # Gráfico de barras comparativo
+        fig_bar = px.bar(
+            vendas_ano_pred,
+            x='Year',
+            y=['Global_Sales', 'Predicted_Global_Sales'],
+            barmode='group',
+            title='Vendas Globais: Real vs Predito (Barras)'
+        )
+        st.plotly_chart(fig_bar, use_container_width=True)
+    else:
+        st.info("Nenhum dado disponível para Real vs Predito.")
+
+
 
