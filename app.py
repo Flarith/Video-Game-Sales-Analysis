@@ -1,7 +1,8 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-from pycaret.regression import load_model, predict_model
+import joblib
+import numpy as np
 
 # --- CSS ---
 st.markdown(
@@ -15,8 +16,18 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# --- Carregando modelo ---
-modelo = load_model('modelo_final_vendas')
+# --- Carregando modelo RandomForest treinado ---
+model = joblib.load("modelo_rf.pkl")
+scaler = joblib.load("scaler.pkl")
+
+def prever_vendas(df):
+    cols = ['Year', 'NA_Sales', 'EU_Sales', 'JP_Sales', 'Other_Sales']
+    X = df[cols].copy()
+    X_scaled = scaler.transform(X)
+
+    y_pred_log = model.predict(X_scaled)
+    y_pred = np.expm1(y_pred_log)
+    return y_pred
 
 # --- Título ---
 st.markdown('<h3>Painel de Análise de Vendas de Jogos</h3>', unsafe_allow_html=True)
@@ -35,17 +46,13 @@ else:
 st.dataframe(novos_dados)
 
 # --- Previsões ---
-previsoes = predict_model(modelo, data=novos_dados)
+novos_dados['Predicted_Global_Sales'] = prever_vendas(novos_dados)
 
-# Detectar automaticamente a coluna de predição adicionada pelo PyCaret
-pred_col = [c for c in previsoes.columns if c not in novos_dados.columns][0]
-novos_dados['Predicted_Global_Sales'] = previsoes[pred_col]
+# --- Calcular Erros ---
+novos_dados['Erro'] = novos_dados['Predicted_Global_Sales'] - novos_dados['Global_Sales']
 
 # --- Adicionando informações extras para filtros ---
-previsoes_ext = previsoes.copy()
-for col in ['Name', 'Year', 'Platform', 'Genre', 'Publisher']:
-    if col in novos_dados.columns:
-        previsoes_ext[col] = novos_dados[col]
+previsoes_ext = novos_dados.copy()
 
 # --- Filtros na sidebar ---
 st.sidebar.header("Filtros")
@@ -213,10 +220,25 @@ with tab5:
             title='Vendas Globais: Real vs Predição (Barras)'
         )
         st.plotly_chart(fig_bar, use_container_width=True)
+
+        # Scatterplot comparativo
+        fig_scatter = px.scatter(
+        novos_dados,
+        x='Global_Sales',
+        y='Predicted_Global_Sales',
+        color='Genre',  
+        title='Real vs Predição (Scatter)',
+        labels={'Global_Sales':'Vendas Reais', 'Predicted_Global_Sales':'Vendas do modelo'}
+        )
+        fig_scatter.add_shape(
+            type='line',
+            x0=novos_dados['Global_Sales'].min(),
+            y0=novos_dados['Global_Sales'].min(),
+            x1=novos_dados['Global_Sales'].max(),
+            y1=novos_dados['Global_Sales'].max(),
+            line=dict(color='Red', dash='dash')
+        )
+        st.plotly_chart(fig_scatter, use_container_width=True)
     else:
-        st.info("Nenhum dado disponível para Real vs Predição.")
-
-
-
-
+        st.info("Nenhum dado disponível para Real vs Previsão.")
 
