@@ -17,7 +17,7 @@ st.markdown(
 )
 
 # --- Carregando modelo RandomForest treinado ---
-model = joblib.load("modelo_rf.pkl")
+model = joblib.load("modelo_rf_compress.pkl")
 scaler = joblib.load("scaler.pkl")
 
 def prever_vendas(df):
@@ -241,4 +241,5 @@ with tab5:
         st.plotly_chart(fig_scatter, use_container_width=True)
     else:
         st.info("Nenhum dado disponível para Real vs Previsão.")
+
 
