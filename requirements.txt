@@ -2,5 +2,8 @@ streamlit
 pandas
 plotly-express
 pycaret
+numpy
+joblib
+scikit-learn
 
 
