@@ -83,7 +83,7 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "Top Jogos", 
     "Plataformas & Distribuições", 
     "Análises avançadas", 
-    "Real vs Predito"
+    "Real vs Predição"
 ])
 
 # --- Vendas por Ano ---
@@ -188,7 +188,7 @@ with tab4:
     else:
         st.info("Nenhum dado disponível para Evolução das Plataformas.")
 
-# --- Real vs Predito ---
+# --- Real vs Predição ---
 with tab5:
     if not novos_dados.empty and 'Year' in novos_dados.columns:
         vendas_ano_pred = novos_dados.groupby('Year')[['Global_Sales','Predicted_Global_Sales']].sum().reset_index()
@@ -198,7 +198,7 @@ with tab5:
             vendas_ano_pred,
             x='Year',
             y=['Global_Sales', 'Predicted_Global_Sales'],
-            title='Vendas Globais: Real vs Predito',
+            title='Vendas Globais: Real vs Predição',
             labels={'value':'Vendas Globais', 'Year':'Ano', 'variable':'Legenda'},
             markers=True
         )
@@ -210,11 +210,12 @@ with tab5:
             x='Year',
             y=['Global_Sales', 'Predicted_Global_Sales'],
             barmode='group',
-            title='Vendas Globais: Real vs Predito (Barras)'
+            title='Vendas Globais: Real vs Predição (Barras)'
         )
         st.plotly_chart(fig_bar, use_container_width=True)
     else:
-        st.info("Nenhum dado disponível para Real vs Predito.")
+        st.info("Nenhum dado disponível para Real vs Predição.")
+
 
 
 
