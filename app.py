@@ -36,7 +36,7 @@ st.markdown('<h2 style="color:#6B5B95;">🎮 Painel Interativo de Vendas de Jogo
 st.markdown(
     """
     <div class="insight">
-    📄 <b>Dataset:</b> [Video Game Sales](https://www.kaggle.com/datasets/gregorut/videogamesales/code) - Contém dados históricos de vendas globais de jogos de videogame, incluindo regiões, gêneros, plataformas e publicadoras.<br>
+    📄 <b>Dataset:</b> Video Game Sales:(https://www.kaggle.com/datasets/gregorut/videogamesales/code) - Contém dados históricos de vendas globais de jogos de videogame, incluindo regiões, gêneros, plataformas e publicadoras.<br>
     🎯 <b>Objetivo do Modelo de Regressão:</b> Estimar as vendas globais dos jogos com base em suas vendas globais.<br>
     📊 <b>Objetivo do Painel:</b> Explorar visualmente padrões de vendas históricos, comparar os valores reais com as estimativas do modelo, e analisar o desempenho de jogos por plataforma, gênero, região e publicadora.
     </div>
@@ -103,7 +103,7 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
 
 # --- Vendas por Ano ---
 with tab1:
-    st.markdown('<div class="insight">✨ <b>Insight:</b> Observe como as vendas globais variam ano a ano, destacando picos e tendências do mercado.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="insight">✨ Observe como as vendas globais variam ano a ano, destacando picos e tendências do mercado.</div>', unsafe_allow_html=True)
     if not filtrado.empty and 'Year' in filtrado.columns:
         vendas_ano = filtrado.groupby('Year')['Global_Sales'].sum().reset_index()
         fig_ano = px.line(vendas_ano, x='Year', y='Global_Sales', title="Vendas Totais por Ano",
@@ -112,7 +112,7 @@ with tab1:
 
         if len(regioes_sel) > 0:
             vendas_ano_regiao = filtrado.groupby('Year')[regioes_sel].sum().reset_index()
-            st.markdown('<div class="insight">🌍 <b>Insight:</b> Comparando regiões, podemos ver quais mercados mais impactam o total de vendas.</div>', unsafe_allow_html=True)
+            st.markdown('<div class="insight">🌍 Comparando regiões, podemos ver quais mercados mais impactam o total de vendas.</div>', unsafe_allow_html=True)
             fig_regiao = px.bar(vendas_ano_regiao, x='Year', y=regioes_sel,
                                 title="Vendas por Ano por Região", labels={'value':'Vendas','Year':'Ano'}, text_auto=True)
             st.plotly_chart(fig_regiao, use_container_width=True)
@@ -121,7 +121,7 @@ with tab1:
 
 # --- Top Jogos ---
 with tab2:
-    st.markdown('<div class="insight">🏅 <b>Insight:</b> Aqui vemos os jogos com maior impacto nas vendas globais. Alguns títulos clássicos ainda aparecem com força.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="insight">🏅 Aqui vemos os jogos com maior impacto nas vendas globais. Alguns títulos clássicos ainda aparecem com força.</div>', unsafe_allow_html=True)
     if not filtrado.empty and 'Name' in filtrado.columns:
         top_jogos = filtrado.sort_values(by='Global_Sales', ascending=False).head(10)
         if not top_jogos.empty:
@@ -132,7 +132,7 @@ with tab2:
             fig_top.update_layout(xaxis_tickangle=-45)
             st.plotly_chart(fig_top, use_container_width=True)
 
-            st.markdown('<div class="insight">🎨 <b>Insight:</b> Distribuição de vendas por gênero dentro do Top 10.</div>', unsafe_allow_html=True)
+            st.markdown('<div class="insight">🎨 Distribuição de vendas por gênero dentro do Top 10.</div>', unsafe_allow_html=True)
             fig_treemap = px.treemap(top_jogos, path=['Genre','Name'], values='Global_Sales',
                                      title="Top Jogos por Gênero")
             st.plotly_chart(fig_treemap, use_container_width=True)
@@ -143,7 +143,7 @@ with tab2:
 
 # --- Plataformas & Distribuições ---
 with tab3:
-    st.markdown('<div class="insight">🕹️ <b>Insight:</b> Avaliando plataformas e distribuição de vendas, podemos entender o panorama do mercado e preferências regionais.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="insight">🕹️ Avaliando plataformas e distribuição de vendas, podemos entender o panorama do mercado e preferências regionais.</div>', unsafe_allow_html=True)
     col1, col2 = st.columns(2)
     if not filtrado.empty and 'Platform' in filtrado.columns:
         vendas_plat = filtrado.groupby('Platform')['Global_Sales'].sum().sort_values(ascending=False).reset_index()
@@ -162,7 +162,7 @@ with tab3:
         col2.plotly_chart(fig_donut, use_container_width=True)
 
     if not filtrado.empty and 'Genre' in filtrado.columns:
-        st.markdown('<div class="insight">🎭 <b>Insight:</b> Distribuição de vendas por gênero ao longo do tempo.</div>', unsafe_allow_html=True)
+        st.markdown('<div class="insight">🎭 Distribuição de vendas por gênero ao longo do tempo.</div>', unsafe_allow_html=True)
         vendas_genero = filtrado.groupby('Genre')['Global_Sales'].sum().reset_index()
         fig_genero = px.pie(vendas_genero, names='Genre', values='Global_Sales',
                             title='Distribuição de Vendas por Gênero', hole=0.4,
@@ -177,7 +177,7 @@ with tab3:
 
 # --- Análises Avançadas ---
 with tab4:
-    st.markdown('<div class="insight">🔍 <b>Insight:</b> Análises detalhadas por gênero, publicadora e plataforma ao longo do tempo.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="insight">🔍 Análises detalhadas por gênero, publicadora e plataforma ao longo do tempo.</div>', unsafe_allow_html=True)
     if not filtrado.empty and 'Year' in filtrado.columns and 'Genre' in filtrado.columns:
         heatmap_data = filtrado.groupby(['Year','Genre'])['Global_Sales'].sum().reset_index()
         fig_heatmap = px.density_heatmap(heatmap_data, x="Year", y="Genre", z="Global_Sales",
@@ -203,7 +203,7 @@ with tab4:
 
 # --- Real vs Predição ---
 with tab5:
-    st.markdown('<div class="insight">🔮 <b>Insight:</b> Comparação entre vendas reais e previsão do modelo. Linhas e gráficos ajudam a identificar acertos e erros do modelo.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="insight">🔮 Comparação entre vendas reais e previsão do modelo. Linhas e gráficos ajudam a identificar acertos e erros do modelo.</div>', unsafe_allow_html=True)
     if not novos_dados.empty and 'Year' in novos_dados.columns:
         vendas_ano_pred = novos_dados.groupby('Year')[['Global_Sales','Predicted_Global_Sales']].sum().reset_index()
 
@@ -253,4 +253,5 @@ with tab5:
             st.plotly_chart(fig_plat, use_container_width=True)
     else:
         st.info("Nenhum dado disponível para Real vs Previsão.")
+
 
