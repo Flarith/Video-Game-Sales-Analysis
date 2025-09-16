@@ -239,7 +239,17 @@ with tab5:
             line=dict(color='Red', dash='dash')
         )
         st.plotly_chart(fig_scatter, use_container_width=True)
+        
+        # comparação entre plataformas previsão e dados reais
+        if not filtrado.empty and 'Platform' in filtrado.columns:
+            vendas_plat = filtrado.groupby('Platform')[['Global_Sales','Predicted_Global_Sales']].sum().reset_index()
+            fig_plat = px.bar(
+                vendas_plat, x='Platform', y=['Global_Sales','Predicted_Global_Sales'],
+                barmode='group', title="Vendas por Plataforma: Real vs Previsto", text_auto=True
+            )
+        st.plotly_chart(fig_plat, use_container_width=True)
     else:
         st.info("Nenhum dado disponível para Real vs Previsão.")
+
 
 
